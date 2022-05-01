@@ -70,47 +70,4 @@ end
 num_disparity = 128
 window_size = (0,0)
 
-size(im2)
-
 map = construct_disparity_map(im2, im6, num_disparity, window_size)
-
-@show map
-
-Gray.(map)
-
-map2 = map/maximum(map)*255
-
-Gray.(map2)
-
-
-block_matching_iteration(im2, im6, CartesianIndex(201,201), 20, (3,3))
-x = 3
-"bla $x 232a"
-
-
-ret = im2[neighbourhood(CartesianIndex(201,184), (2,2), size(im2))]
-
-print(ret)
-size(ret)
-channelview(ret)
-
-
-neighbourhood(CartesianIndex(201,184), (2,2), size(im2))
-
-ret
-
-im2[1, 1] * 255
-Gray(im2[1,1]) 
-im2[1,1] ^ 2
-
-@timed x = im2[neighbourhood(CartesianIndex(201,184), (2,2), size(im2))]
-
-@timed x = @view im2[neighbourhood(CartesianIndex(201,184), (2,2), size(im2))]
-
-using BenchmarkTools
-
-@benchmark @view im2[neighbourhood(CartesianIndex(201,184), (2,2), size(im2))]
-
-@benchmark  im2[neighbourhood(CartesianIndex(201,184), (2,2), size(im2))]
-
-@benchmark block_matching_iteration(im2, im6, CartesianIndex(201,201), 20, (3,3))
