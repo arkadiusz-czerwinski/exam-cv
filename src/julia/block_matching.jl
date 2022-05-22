@@ -36,8 +36,9 @@ function block_matching_iteration(image_l, image_r, index::CartesianIndex, num_d
     ref_block = @view image_l[neighbourhood(index, window_size, size(image_l))]
 
     metric_val = Inf
-    disparity = 0
-
+    min_disparity = boundaries_matrix[index, 1]
+    max_disparity = boundaries_matrix[index, 2]
+    disparity = Int(floor(mean([min_disparity, max_disparity])))
     for i in start_ind:end_ind
 
         cur_index = CartesianIndex(index[1], i);
@@ -45,13 +46,9 @@ function block_matching_iteration(image_l, image_r, index::CartesianIndex, num_d
         comparable = @view image_r[nbh];
 
         cur_disparity = abs(index[2] - i)
-        min_disparity = boundaries_matrix[index, 1]
-        max_disparity = boundaries_matrix[index, 2]
 
-        println("cur_disparity: ", cur_disparity, "min_disparity: ", min_disparity, "max_disparity: ", max_disparity)
-
+ 
         if ~(min_disparity < cur_disparity < max_disparity)
-            println("OUTISDE")
             continue
         end
 
@@ -121,7 +118,6 @@ function create_statistical_boundaries_matrix(disparity_map::Matrix{Float64}, wi
 
     for y_coord in start_y:2*window_radius[2]:size(disparity_map)[2]
         for x_coord in start_x:2*window_radius[1]:size(disparity_map)[1]
-            println(x_coord, " ", y_coord)
 
             cur_index = CartesianIndex(x_coord, y_coord);
             nbh = neighbourhood(cur_index, window_radius, size(disparity_map));

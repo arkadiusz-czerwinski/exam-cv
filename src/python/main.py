@@ -5,17 +5,17 @@ from pathlib import Path
 from time import sleep
 from tqdm import tqdm
 
-DATA_DIR = Path(__file__).parents[1] /  'data' / 'Teddy'
+DATA_DIR = Path(__file__).parents[2]  / 'Teddy'
 print(DATA_DIR.resolve())
 imgR = cv.imread(str(DATA_DIR / "im2.png")) / 255
 imgL = cv.imread(str(DATA_DIR / "im6.png")) / 255
 
-imgR = cv.resize(imgR, (imgL.shape[1]//2, imgL.shape[0]//2))
-imgL = cv.resize(imgL, (imgL.shape[1]//2, imgL.shape[0]//2))
+# imgR = cv.resize(imgR, (imgL.shape[1]//2, imgL.shape[0]//2))
+# imgL = cv.resize(imgL, (imgL.shape[1]//2, imgL.shape[0]//2))
 print(f"Block matching... image of size {imgL.shape}")
 initial_points = []
-windows_size = (3,3)
-max_disparity = 16
+windows_size = (2,2)
+max_disparity = 64
 
 
 disparity_map = np.zeros_like(imgL) + max_disparity
@@ -41,8 +41,13 @@ for i in tqdm(range(windows_size[0],imgL.shape[0] - windows_size[0])):
         disparity_map[i, j] = block_matching_iteration(windows_size, imgL, imgR, i, j)
         
 
+from sklearn.preprocessing import normalize
 
 print(disparity_map)
+norms = np.linalg.norm(disparity_map, axis=1)
+disparity_map = disparity_map / norms
+
+
 plt.imshow(disparity_map[windows_size[0]:-windows_size[0],windows_size[1]:-windows_size[1]])
 plt.show()
 
