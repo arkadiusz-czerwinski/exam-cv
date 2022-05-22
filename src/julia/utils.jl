@@ -19,6 +19,3 @@ function neighbourhood(index::CartesianIndex, radiuses::Tuple{Vararg{Int}}, shap
     return CartesianIndices(Tuple(max(1, a-radius):min(shape_boundary, a+radius) for (a, shape_boundary, radius) in zip(index.I, shape, radiuses)))
 
 end
-
-# neighbourhood(CartesianIndex(1,2,3), 3)
-# neighbourhood(CartesianIndex(1,2,3), 3, (5,5,5))
