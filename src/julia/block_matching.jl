@@ -71,11 +71,13 @@ function get_padded_images(image_l::Array, image_r::Array, window_size::Tuple{Va
 end
 
 
+function init_map_and_shape(image)
+    return zeros(size(image)), size(image)
+end
+
 function construct_disparity_map(image_l::Array, image_r::Array, num_disparity::Int, window_size::Tuple{Vararg{Int}})
 
-    shape = size(image_l)
-
-    map = zeros(shape)
+    map, shape = init_map_and_shape(image_l)
 
     image_l_padded, image_r_padded = get_padded_images(image_l, image_r, window_size)
 
@@ -92,9 +94,7 @@ end
 
 function construct_disparity_map(image_l::Array, image_r::Array, num_disparity::Int, window_size::Tuple{Vararg{Int}}, boundaries_matrix::Array{Int64, 3})
 
-    shape = size(image_l)
-
-    map = zeros(shape)
+    map, shape = init_map_and_shape(image_l)
 
     image_l_padded, image_r_padded = get_padded_images(image_l, image_r, window_size)
 
@@ -132,4 +132,9 @@ function create_statistical_boundaries_matrix(disparity_map::Matrix{Float64}, wi
     end
 
     return Int.(round.(boundaries))
+end
+
+function calculate_distance_matrix(disparity_map::Matrix{Float64}, focal_length::Float64, camera_distance::Float64)
+
+    return focal_length * camera_distance ./ disparity_map
 end
